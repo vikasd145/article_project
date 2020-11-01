@@ -1,0 +1,29 @@
+---
+version: "3"
+volumes:
+  mysql-data
+services:
+  article_project:
+    container_name: article_server
+    depends_on:
+      - mysql-server
+    build:
+      context: ../
+      dockerfile: scripts/server/Dockerfile
+    ports:
+    - "8080:8080"
+    restart: always
+  mysql-server:
+    container_name: mysql_server
+    build:
+      context: ../
+      dockerfile: scripts/mysql/Dockerfile
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: qwerty123
+      MYSQL_USER: free_user
+      MYSQL_PASSWORD: qwerty123
+    ports:
+    - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql/data

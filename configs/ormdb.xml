@@ -1,6 +1,6 @@
 <config>
     <Instance>
         <Name>article_db</Name>
-        <Master>free_user:qwerty1234@tcp(localhost:3306)/article_db?timeout=100s&amp;readTimeout=1000s</Master>
+        <Master>free_user:qwerty123@tcp(localhost:3306)/article_db?timeout=100s&amp;readTimeout=1000s</Master>
     </Instance>
 </config>
