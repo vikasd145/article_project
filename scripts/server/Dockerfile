@@ -9,7 +9,7 @@ COPY go.mod go.sum ./
 
 RUN go mod vendor
 
-COPY .. .
+COPY . .
 
 RUN go build -v ./cmd/article_server/article_main.go -o main
 
