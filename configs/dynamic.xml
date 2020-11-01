@@ -1,0 +1,5 @@
+<config>
+    <DBContextQueryTimeout></DBContextQueryTimeout>
+    <!-- Request read max body size 5MB -->
+    <MaxRequestBodySize>5242880</MaxRequestBodySize>
+</config>

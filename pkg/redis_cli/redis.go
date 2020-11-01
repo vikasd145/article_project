@@ -35,7 +35,7 @@ func NewClient(addr string) (*Rcli, error) {
 }
 
 func (rcli *Rcli) Set(key string, value string) error {
-	err := rcli.Client.Set(key, value, 20*time.Minute).Err()
+	err := rcli.Client.Set(key, value, 30*time.Minute).Err()
 	if err != nil {
 		log.Printf("ErrorValue in setting Key:%v", err)
 	}

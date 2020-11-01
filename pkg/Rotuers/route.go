@@ -23,7 +23,7 @@ type Routes []Route
 
 //NewRouter Return new Router
 func NewRouter(root string) *mux.Router {
-	router := mux.NewRouter().StrictSlash(true)
+	router := mux.NewRouter()
 	for _, route := range HandlerRoute {
 		router.Methods(route.Method).Path(root + route.Pattern).Name(route.Name).Handler(route.HandleFunc)
 	}
@@ -33,5 +33,5 @@ func NewRouter(root string) *mux.Router {
 
 var HandlerRoute = Routes{
 	Route{"Create a article", "POST", "/article", api.CreateArticle},
-	Route{"Get article by id", "GET", "/articles/{article_id}", api.GetArticleByID},
+	Route{"Get article by id", "GET", "/articles/", api.GetArticle},
 }

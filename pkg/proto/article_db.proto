@@ -4,7 +4,7 @@ package article;
 
 // table article_db
 message Article {
-  optional string article_id    = 1;
+  optional int64 article_id    = 1;
   optional string title   = 2;
   optional string author  = 3;
   optional string content = 4;

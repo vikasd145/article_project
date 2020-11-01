@@ -37,7 +37,7 @@ func InitDB(dataSourceName string) (*DB, error) {
 	return &DB{db}, nil
 }
 
-func (dbcli *DB) GetArticleByID(cont context.Context, id string) (*article.Article, error) {
+func (dbcli *DB) GetArticleByID(cont context.Context, id int64) (*article.Article, error) {
 	queryTemp := "select * from article_tab where id=?"
 	cont, cancel := context.WithTimeout(cont, config.GlobalDynamicConfig.DBContextQueryTimeout)
 	defer cancel()
@@ -57,13 +57,13 @@ func (dbcli *DB) GetAllArticle(cont context.Context) ([]article.Article, error) 
 	defer cancel()
 	stmt, err := dbcli.PrepareContext(cont, queryTemp)
 	if err != nil {
-		_ := fmt.Errorf("GetAllArticle: Error in prepraing db query err:%v", err)
+		_ = fmt.Errorf("GetAllArticle: Error in prepraing db query err:%v", err)
 		return nil, err
 	}
 	defer stmt.Close()
 	results, err := stmt.QueryContext(cont)
 	if err != nil {
-		_ := fmt.Errorf("GetAllArticle: QueryContext error:%v", err)
+		_ = fmt.Errorf("GetAllArticle: QueryContext error:%v", err)
 		return nil, err
 	}
 	articleData := make([]article.Article, 1024)
@@ -79,16 +79,24 @@ func (dbcli *DB) GetAllArticle(cont context.Context) ([]article.Article, error) 
 	return articleData, nil
 }
 
-func (dbcli *DB) SetArticle(cont context.Context, articleData *article.Article) error {
-	ins, err := dbcli.Prepare("UPDATE article_tab SET title_id=?, author=?, content=? where id = ?")
+func (dbcli *DB) SetArticle(cont context.Context, articleData *article.Article)(int64, error) {
+	cont, cancel := context.WithTimeout(cont, config.GlobalDynamicConfig.DBContextQueryTimeout)
+	defer cancel()
+	ins, err := dbcli.PrepareContext(cont,"UPDATE article_tab SET title_id=?, author=?, content=? where id = ?")
 	if err != nil {
 		log.Printf("Error preparing SetArticle:%v, article:%v", err, articleData)
-		return err
+		return -1,err
 	}
-	_, err = ins.Exec(articleData.GetTitle(), articleData.GetAuthor(), articleData.GetContent(), articleData.GetArticleId())
+	info, err := ins.Exec(articleData.GetTitle(), articleData.GetAuthor(), articleData.GetContent(), articleData.GetArticleId())
 	if err != nil {
 		log.Printf("Error Executing SetArticle:%v, article:%v", err, articleData)
-		return err
+		return -1,err
 	}
-	return nil
+	fmt.Printf("info:%+v",info)
+	data,err := info.LastInsertId()
+	if err != nil {
+		_ = fmt.Errorf("Error in getting article id:%v",err)
+		return -1,err
+	}
+	return data,nil
 }
